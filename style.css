@@ -1,0 +1,601 @@
+body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #020617;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        .holo-glow {
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3), inset 0 0 20px rgba(0, 242, 254, 0.15);
+        }
+        .event-title {
+            color: #00f2fe;
+            animation: event-title-color-cycle 6s linear infinite;
+            text-shadow: 0 0 14px currentColor;
+        }
+        .holo-glow-alert {
+            box-shadow: 0 0 40px rgba(244, 63, 94, 0.5), inset 0 0 25px rgba(244, 63, 94, 0.3);
+            border-color: #f43f5e !important;
+        }
+        .scanlines {
+            background-image: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 242, 254, 0.035) 50%,
+                rgba(0, 242, 254, 0.035)
+            );
+            background-size: 100% 4px;
+        }
+        .lab-uplight {
+            background: radial-gradient(circle at 50% 100%, rgba(0, 242, 254, 0.32) 0%, rgba(16, 185, 129, 0.12) 45%, transparent 80%);
+        }
+        .animal-card-active {
+            border-color: #00f2fe !important;
+            background: rgba(0, 242, 254, 0.15) !important;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+        }
+        .animal-card-aggressive {
+            border-color: rgba(251, 113, 133, 0.6);
+            background: linear-gradient(110deg, rgba(127, 29, 29, 0.38), rgba(15, 23, 42, 0.82));
+            box-shadow: inset 0 0 15px rgba(244, 63, 94, 0.08);
+        }
+        .animal-card-aggressive.animal-card-active {
+            border-color: #fb7185 !important;
+            box-shadow: 0 0 16px rgba(244, 63, 94, 0.3);
+        }
+        #animal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .specimen-attack-status {
+            margin: -0.25rem 0 0.75rem;
+            padding: 0.45rem 0.6rem;
+            border: 1px solid rgba(251, 191, 36, 0.45);
+            border-radius: 0.6rem;
+            background: rgba(120, 53, 15, 0.28);
+            color: #fde68a;
+            font: 700 0.62rem/1.3 Orbitron, sans-serif;
+            text-align: center;
+        }
+        .specimen-attack-status.is-aggressive {
+            border-color: rgba(251, 113, 133, 0.7);
+            background: rgba(127, 29, 29, 0.35);
+            color: #fda4af;
+            box-shadow: 0 0 14px rgba(244, 63, 94, 0.2);
+        }
+        .aggression-mode-btn {
+            display: flex;
+            width: 100%;
+            min-height: 2.35rem;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            margin: -0.35rem 0 0.75rem;
+            padding: 0.45rem;
+            border: 1px solid rgba(251, 113, 133, 0.65);
+            border-radius: 0.65rem;
+            background: linear-gradient(100deg, rgba(127, 29, 29, 0.55), rgba(88, 28, 135, 0.32));
+            color: #fecdd3;
+            font: 700 0.58rem/1.25 Orbitron, sans-serif;
+            cursor: pointer;
+            transition: background-color 180ms, border-color 180ms, color 180ms, box-shadow 180ms, transform 180ms;
+        }
+        .aggression-mode-btn:hover,
+        .aggression-mode-btn:focus-visible {
+            border-color: #fda4af;
+            box-shadow: 0 0 14px rgba(244, 63, 94, 0.25);
+            color: #fff;
+        }
+        .aggression-mode-btn:focus-visible { outline: 2px solid #fda4af; outline-offset: 2px; }
+        .aggression-mode-btn:active { transform: scale(0.98); }
+        .aggression-mode-btn.is-aggressive {
+            border-color: rgba(52, 211, 153, 0.65);
+            background: linear-gradient(100deg, rgba(6, 78, 59, 0.65), rgba(8, 47, 73, 0.55));
+            color: #a7f3d0;
+        }
+        .animal-card {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid #1e293b;
+            border-radius: 0.75rem;
+            background: rgba(15, 23, 42, 0.7);
+            color: #e2e8f0;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            transition: border-color 300ms, background-color 300ms, box-shadow 300ms;
+        }
+        .animal-card:hover { border-color: #475569; }
+        .animal-card:focus-visible,
+        .animal-action:focus-visible { outline: 2px solid #00f2fe; outline-offset: 3px; }
+        .animal-card-details { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+        .animal-card-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            flex: 0 0 auto;
+            display: grid;
+            position: relative;
+            place-items: center;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            background: #020617;
+            font-size: 1.5rem;
+        }
+        .animal-card-avatar-glyph {
+            transform: scaleX(-1);
+        }
+        .animal-card-aggressive .animal-card-avatar {
+            border-color: rgba(251, 113, 133, 0.7);
+            box-shadow: 0 0 12px rgba(244, 63, 94, 0.3);
+        }
+        .animal-card-aggressive[data-animal="jaguar"] .animal-card-avatar { animation: card-jaguar-attack 2.1s ease-in-out infinite; }
+        .animal-card-aggressive[data-animal="dolphin"] .animal-card-avatar { animation: card-dolphin-swim 2.4s ease-in-out infinite; }
+        .animal-card-aggressive[data-animal="harpy"] .animal-card-avatar { animation: card-harpy-hunt 2.6s ease-in-out infinite; }
+        .animal-card-aggressive[data-animal="macaw"] .animal-card-avatar { animation: card-macaw-flight 1.4s ease-in-out infinite; }
+        .animal-card-aggressive[data-animal="manatee"] .animal-card-avatar { animation: card-manatee-graze 3s ease-in-out infinite; }
+        .animal-card-aggressive[data-animal="armadillo"] .animal-card-avatar { animation: card-armadillo-dig 1.8s ease-in-out infinite; }
+        .animal-card-aggressive[data-animal="jaguar"] .animal-card-avatar::after {
+            position: absolute;
+            top: -0.45rem;
+            right: -0.35rem;
+            color: #fda4af;
+            content: "✦";
+            font-size: 1.1rem;
+            line-height: 1;
+            opacity: 0;
+            pointer-events: none;
+            animation: card-jaguar-claws 2.1s ease-in-out infinite;
+        }
+        .animal-card-aggressive .animal-card-badge {
+            border-color: rgba(251, 113, 133, 0.65);
+            color: #fda4af;
+            font-size: 0.52rem;
+        }
+        .animal-card.is-performing-action .animal-card-avatar { animation-duration: 1.8s; animation-timing-function: ease-in-out; animation-fill-mode: both; }
+        .animal-card.is-performing-action[data-animal="jaguar"] .animal-card-avatar { animation-name: card-jaguar-stalk; }
+        .animal-card.is-performing-action[data-animal="dolphin"] .animal-card-avatar { animation-name: card-dolphin-swim; }
+        .animal-card.is-performing-action[data-animal="harpy"] .animal-card-avatar { animation-name: card-harpy-hunt; }
+        .animal-card.is-performing-action[data-animal="macaw"] .animal-card-avatar { animation-name: card-macaw-flight; }
+        .animal-card.is-performing-action[data-animal="manatee"] .animal-card-avatar { animation-name: card-manatee-swim; }
+        .animal-card.is-performing-action[data-animal="armadillo"] .animal-card-avatar { animation-name: card-armadillo-dig; }
+        .animal-card-avatar-glyph-macaw {
+            filter: grayscale(1) sepia(1) saturate(5) hue-rotate(175deg) brightness(0.95);
+        }
+        .animal-card-avatar-glyph-dolphin,
+        .animal-avatar[data-animal="dolphin"] .animal-emoji-glyph {
+            filter: hue-rotate(115deg) saturate(1.35) brightness(1.08);
+        }
+        .animal-card-copy { display: flex; flex-direction: column; min-width: 0; }
+        .animal-card-name {
+            overflow: hidden;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .animal-card-scientific {
+            color: #94a3b8;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.625rem;
+            font-style: italic;
+        }
+        .animal-card-nature-action {
+            color: #fda4af;
+            font: 700 0.48rem/1.25 Orbitron, sans-serif;
+            letter-spacing: 0.025em;
+        }
+        .animal-card-badge {
+            flex: 0 0 auto;
+            padding: 0.125rem 0.5rem;
+            border: 1px solid #1e293b;
+            border-radius: 0.25rem;
+            background: rgba(2, 6, 23, 0.8);
+            color: #94a3b8;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.625rem;
+        }
+        .animal-card-active .animal-card-badge { border-color: rgba(0, 242, 254, 0.5); color: #00f2fe; }
+        .visitor-guide {
+            padding: 0.75rem;
+            border: 1px solid rgba(0, 242, 254, 0.28);
+            border-radius: 0.85rem;
+            background: linear-gradient(135deg, rgba(8, 47, 73, 0.6), rgba(2, 6, 23, 0.92));
+        }
+        .visitor-guide-intro {
+            margin-bottom: 0.65rem;
+            color: #cbd5e1;
+            font-size: 0.8rem;
+            line-height: 1.35;
+        }
+        .visitor-guide-tour,
+        .guide-nav-btn,
+        .guide-read-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            min-height: 2.5rem;
+            border: 1px solid rgba(0, 242, 254, 0.55);
+            border-radius: 0.6rem;
+            background: rgba(8, 47, 73, 0.8);
+            color: #a5f3fc;
+            font: 700 0.65rem/1.2 Orbitron, sans-serif;
+            cursor: pointer;
+            transition: background-color 180ms, color 180ms, border-color 180ms, transform 180ms;
+        }
+        .visitor-guide-tour {
+            width: 100%;
+            padding: 0.55rem;
+            background: linear-gradient(100deg, rgba(8, 145, 178, 0.32), rgba(6, 78, 59, 0.36));
+        }
+        .visitor-guide-tour:hover,
+        .guide-nav-btn:hover,
+        .guide-read-btn:hover {
+            border-color: #67e8f9;
+            background-color: rgba(8, 145, 178, 0.38);
+            color: #fff;
+        }
+        .visitor-guide-tour:active,
+        .guide-nav-btn:active,
+        .guide-read-btn:active { transform: scale(0.97); }
+        .visitor-guide-tour:focus-visible,
+        .guide-nav-btn:focus-visible,
+        .guide-read-btn:focus-visible { outline: 2px solid #a5f3fc; outline-offset: 2px; }
+        .visitor-guide-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.45rem;
+            margin-top: 0.55rem;
+        }
+        .guide-nav-btn { width: 2.5rem; flex: 0 0 auto; }
+        .guide-progress {
+            flex: 1;
+            color: #e2e8f0;
+            font: 600 0.55rem/1.2 Orbitron, sans-serif;
+            text-align: center;
+        }
+        .guide-read-btn { padding: 0.4rem 0.55rem; }
+        .guide-status {
+            min-height: 1.2rem;
+            margin-top: 0.45rem;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+        .conservation-card {
+            padding: 1rem;
+            border: 1px solid rgba(52, 211, 153, 0.42);
+            border-radius: 1rem;
+            background: linear-gradient(145deg, rgba(6, 78, 59, 0.55), rgba(2, 6, 23, 0.94));
+            box-shadow: inset 0 0 22px rgba(16, 185, 129, 0.08), 0 10px 25px rgba(2, 6, 23, 0.35);
+        }
+        .conservation-card h2 { color: #6ee7b7; }
+        .conservation-card p { color: #ecfdf5; }
+        .metrics-disclaimer {
+            margin-top: 0.65rem;
+            color: #94a3b8;
+            font: 600 0.75rem/1.35 Rajdhani, sans-serif;
+        }
+        .animal-action {
+            border: 0;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .animal-action:active { transform: scale(0.97); }
+        #bar-sound { width: 99.8%; }
+        #bar-health { width: 98.4%; }
+        #bar-habitat { width: 94.1%; }
+        .animal-avatar {
+            position: relative;
+            display: grid;
+            width: 1.25em;
+            height: 1em;
+            flex: 0 0 auto;
+            place-items: center;
+            isolation: isolate;
+            filter: drop-shadow(0 16px 28px rgba(0, 242, 254, 0.5));
+            animation: animal-float 2.6s ease-in-out infinite;
+            will-change: translate, rotate, scale, filter;
+        }
+        .animal-avatar.is-calm-floating[data-animal] { animation: animal-float 2.6s ease-in-out infinite; }
+        .animal-avatar::before,
+        .animal-avatar::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            width: 1.35em;
+            height: 0.8em;
+            border: 1px solid rgba(0, 242, 254, 0.62);
+            border-radius: 50%;
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.25), inset 0 0 12px rgba(0, 242, 254, 0.12);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .animal-avatar::before { animation: animal-shield-orbit 3s ease-in-out infinite; }
+        .animal-avatar::after {
+            width: 1.6em;
+            height: 0.95em;
+            border-color: rgba(16, 185, 129, 0.55);
+            animation: animal-shield-orbit 3.8s ease-in-out -1.2s infinite reverse;
+        }
+        .animal-emoji {
+            position: relative;
+            display: block;
+            width: 1em;
+            height: 1em;
+            font-size: 1em;
+            line-height: 1;
+        }
+        .animal-emoji-glyph {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            transform: scaleX(-1);
+            transform-origin: center;
+        }
+        .animal-avatar[data-animal="jaguar"] .animal-emoji { --eye-left: 52%; --eye-top: 26%; }
+        .animal-avatar[data-animal="dolphin"] .animal-emoji { --eye-left: 46%; --eye-top: 15%; }
+        .animal-avatar[data-animal="harpy"] .animal-emoji { --eye-left: 54%; --eye-top: 22.5%; }
+        .animal-avatar[data-animal="macaw"] .animal-emoji { --eye-left: 46%; --eye-top: 11.5%; }
+        .animal-avatar[data-animal="manatee"] .animal-emoji { --eye-left: 52%; --eye-top: 27%; }
+        .animal-avatar[data-animal="armadillo"] .animal-emoji { --eye-left: 49%; --eye-top: 38%; }
+        .animal-card[data-animal="jaguar"] .animal-card-avatar { --eye-left: 51%; --eye-top: 36%; }
+        .animal-card[data-animal="dolphin"] .animal-card-avatar { --eye-left: 48%; --eye-top: 29%; }
+        .animal-card[data-animal="harpy"] .animal-card-avatar { --eye-left: 52%; --eye-top: 33.5%; }
+        .animal-card[data-animal="macaw"] .animal-card-avatar { --eye-left: 48%; --eye-top: 27%; }
+        .animal-card[data-animal="manatee"] .animal-card-avatar { --eye-left: 51%; --eye-top: 36%; }
+        .animal-card[data-animal="armadillo"] .animal-card-avatar { --eye-left: 49%; --eye-top: 43%; }
+        .animal-eye {
+            position: absolute;
+            z-index: 3;
+            top: var(--eye-top, 38%);
+            left: var(--eye-left, 66%);
+            width: clamp(3px, 0.032em, 5px);
+            aspect-ratio: 1;
+            border: 1px solid rgba(15, 23, 42, 0.8);
+            border-radius: 50%;
+            background: radial-gradient(circle at 34% 30%, #fff 0 12%, currentColor 25% 54%, #111827 70% 100%);
+            box-shadow: 0 0 1px rgba(15, 23, 42, 0.9);
+            color: #38bdf8;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: animal-eye-color-cycle 5s linear infinite;
+        }
+        .animal-card-avatar .animal-eye {
+            width: 2px;
+            border: 0;
+        }
+        .animal-avatar.is-aggressive-mode .animal-eye {
+            z-index: 4;
+            width: clamp(5px, 0.05em, 8px);
+            border-color: #7f1d1d;
+            background: radial-gradient(circle at 35% 30%, #fff1f2 0 16%, #ef4444 34% 70%, #7f1d1d 100%);
+            box-shadow: 0 0 3px 2px rgba(239, 68, 68, 0.9);
+            color: #ef4444;
+            animation: angry-eye-pulse 1.2s ease-in-out infinite alternate;
+        }
+        .animal-avatar.is-aggressive-mode .animal-eye::before {
+            position: absolute;
+            right: 1px;
+            bottom: calc(100% + 1px);
+            width: clamp(5px, 0.06em, 10px);
+            height: 2px;
+            border-radius: 2px;
+            background: #fb7185;
+            box-shadow: 0 0 3px rgba(239, 68, 68, 0.9);
+            content: "";
+            transform: rotate(18deg);
+            transform-origin: right center;
+        }
+        .animal-avatar.is-red-eyed .animal-eye {
+            animation: none;
+            background: radial-gradient(circle at 34% 30%, #fff7f7 0 12%, #fb7185 25% 54%, #7f1d1d 70% 100%);
+            box-shadow: 0 0 5px 2px rgba(239, 68, 68, 0.8);
+            color: #ef4444;
+        }
+        .animal-avatar[data-animal="macaw"] .animal-emoji-glyph {
+            filter: grayscale(1) sepia(1) saturate(5) hue-rotate(175deg) brightness(0.95);
+        }
+        .animal-avatar.is-activated {
+            filter: drop-shadow(0 0 22px rgba(0, 242, 254, 0.9)) drop-shadow(0 16px 28px rgba(16, 185, 129, 0.55));
+        }
+        .animal-avatar.is-activated::before,
+        .animal-avatar.is-activated::after {
+            width: 1.75em;
+            height: 1.05em;
+            border-width: 2px;
+            opacity: 0.95;
+            animation: animal-energy-wave 900ms cubic-bezier(0.16, 1, 0.3, 1) 3;
+        }
+        .animal-avatar.is-activated::after {
+            animation-delay: 180ms;
+        }
+        .animal-avatar.is-activated[data-animal="jaguar"] { animation: jaguar-pounce 2.8s cubic-bezier(0.2, 0.85, 0.25, 1); }
+        .animal-avatar.is-activated[data-animal="dolphin"] { animation: dolphin-swim 2.8s ease-in-out; }
+        .animal-avatar.is-activated[data-animal="harpy"] { animation: harpy-flight 2.8s ease-in-out; }
+        .animal-avatar.is-activated[data-animal="macaw"] { animation: macaw-flight 2.8s ease-in-out; }
+        .animal-avatar.is-activated[data-animal="manatee"] { animation: manatee-swim 2.8s ease-in-out; }
+        .animal-avatar.is-activated[data-animal="armadillo"] { animation: armadillo-dig 2.8s ease-in-out; }
+        .animal-avatar.is-activated[data-animal="jaguar"] .animal-emoji-glyph::after {
+            position: absolute;
+            top: 14%;
+            right: -4%;
+            color: #fda4af;
+            content: "✦";
+            font-size: 0.38em;
+            opacity: 0;
+            animation: jaguar-claw-strike 2.8s ease-out;
+        }
+        .nature-scene {
+            position: absolute;
+            z-index: 11;
+            top: 31%;
+            left: 50%;
+            width: min(84%, 340px);
+            height: 180px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%);
+        }
+        .nature-scene.is-active {
+            opacity: 1;
+        }
+        .nature-scene-stage {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .nature-scene-object {
+            position: absolute;
+            display: block;
+            font-size: clamp(1.5rem, 7vw, 2.4rem);
+            line-height: 1;
+            filter: drop-shadow(0 2px 7px rgba(0, 0, 0, 0.8));
+            opacity: 0;
+        }
+        .nature-scene-caption {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            padding: 0.45rem 0.65rem;
+            border: 1px solid rgba(0, 242, 254, 0.55);
+            border-radius: 0.75rem;
+            background: rgba(2, 6, 23, 0.94);
+            color: #e2e8f0;
+            font: 600 0.75rem/1.35 Rajdhani, sans-serif;
+            text-align: center;
+            opacity: 0;
+        }
+        .nature-scene.is-active .nature-scene-caption {
+            animation: scene-caption 3.2s ease-out forwards;
+        }
+        .nature-scene-jaguar .foliage { left: 2%; bottom: 25%; animation: scene-foliage 2.8s ease-out forwards; }
+        .nature-scene-jaguar .prey { right: 2%; top: 26%; animation: scene-prey 2.8s ease-in-out forwards; }
+        .nature-scene-jaguar .ground-cover { left: 15%; bottom: 24%; animation: scene-ground-cover 2.8s ease-out forwards; }
+        .nature-scene-dolphin .sonar { left: 4%; top: 23%; animation: scene-sonar 2.8s ease-out forwards; }
+        .nature-scene-dolphin .fish { right: 6%; top: 28%; animation: scene-fish 2.8s ease-in-out forwards; }
+        .nature-scene-dolphin .fish-second { right: 2%; top: 52%; animation: scene-fish-second 2.8s ease-in-out forwards; }
+        .nature-scene-harpy .canopy { top: 0; left: 3%; animation: scene-canopy 2.8s ease-out forwards; }
+        .nature-scene-harpy .prey { right: 5%; top: 10%; animation: scene-arboreal-prey 2.8s ease-in-out forwards; }
+        .nature-scene-harpy .leaf-fall { left: 15%; bottom: 25%; animation: scene-leaf-fall 2.8s ease-in forwards; }
+        .nature-scene-macaw .branch { top: 2%; right: 10%; animation: scene-branch 2.8s ease-out forwards; }
+        .nature-scene-macaw .seed { top: 25%; left: 8%; animation: scene-seed-fall 2.8s ease-in forwards; }
+        .nature-scene-macaw .sprout { bottom: 20%; left: 14%; animation: scene-sprout-grow 2.8s ease-out forwards; }
+        .nature-scene-manatee .water-plant { bottom: 28%; left: 3%; animation: scene-graze 2.8s ease-in-out forwards; }
+        .nature-scene-manatee .second-plant { bottom: 20%; right: 8%; animation: scene-graze-second 2.8s ease-in-out forwards; }
+        .nature-scene-manatee .bubble { right: 30%; bottom: 35%; animation: scene-bubble 2.8s ease-out forwards; }
+        .nature-scene-armadillo .soil { bottom: 20%; left: 3%; animation: scene-soil 2.8s ease-out forwards; }
+        .nature-scene-armadillo .burrow { right: 21%; bottom: 18%; animation: scene-burrow 2.8s ease-out forwards; }
+        .nature-scene-armadillo .shelter-animal { right: 18%; bottom: 25%; animation: scene-shelter 2.8s ease-in-out forwards; }
+        @keyframes scene-caption {
+            0%, 12% { opacity: 0; transform: translateY(5px); }
+            22%, 82% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-4px); }
+        }
+        @keyframes scene-foliage { 0%, 15% { opacity: 0; transform: translateX(12px); } 35%, 80% { opacity: 1; transform: translateX(0); } 100% { opacity: 0.5; } }
+        @keyframes scene-prey { 0%, 15% { opacity: 0; transform: translateX(20px); } 30%, 48% { opacity: 1; transform: translateX(0); } 78% { opacity: 1; transform: translateX(60px); } 100% { opacity: 0; transform: translateX(90px); } }
+        @keyframes scene-ground-cover { 0%, 24% { opacity: 0; } 42%, 80% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(8px); } }
+        @keyframes scene-sonar { 0%, 12% { opacity: 0; transform: scale(0.4); } 25% { opacity: 1; } 75% { opacity: 0.65; transform: scale(1.7); } 100% { opacity: 0; transform: scale(2); } }
+        @keyframes scene-fish { 0%, 20% { opacity: 0; transform: translateX(35px); } 38%, 72% { opacity: 1; transform: translateX(0); } 100% { opacity: 0.8; transform: translateX(-38px); } }
+        @keyframes scene-fish-second { 0%, 28% { opacity: 0; transform: translateX(28px); } 45%, 74% { opacity: 1; transform: translateX(0); } 100% { opacity: 0.8; transform: translateX(-30px); } }
+        @keyframes scene-canopy { 0%, 12% { opacity: 0; transform: translateY(-12px); } 30%, 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0.8; } }
+        @keyframes scene-arboreal-prey { 0%, 20% { opacity: 0; transform: translateY(-8px); } 36%, 60% { opacity: 1; transform: translateY(0); } 82% { opacity: 1; transform: translate(-38px, 36px); } 100% { opacity: 0; transform: translate(-48px, 50px); } }
+        @keyframes scene-leaf-fall { 0%, 45% { opacity: 0; transform: translateY(-12px) rotate(0); } 60% { opacity: 1; } 100% { opacity: 0; transform: translate(24px, 62px) rotate(80deg); } }
+        @keyframes scene-branch { 0%, 10% { opacity: 0; transform: translateY(-12px); } 30%, 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes scene-seed-fall { 0%, 28% { opacity: 0; transform: translateY(-10px) rotate(0); } 40% { opacity: 1; } 78% { opacity: 1; transform: translate(18px, 74px) rotate(120deg); } 100% { opacity: 0; transform: translate(20px, 86px) rotate(160deg); } }
+        @keyframes scene-sprout-grow { 0%, 65% { opacity: 0; transform: scale(0.25); } 82%, 100% { opacity: 1; transform: scale(1); } }
+        @keyframes scene-graze { 0%, 15% { opacity: 0; transform: translateX(24px); } 32%, 58% { opacity: 1; transform: translateX(0); } 75% { opacity: 0.6; transform: translateX(-20px) scale(0.8); } 100% { opacity: 0.15; transform: translateX(-28px) scale(0.65); } }
+        @keyframes scene-graze-second { 0%, 30% { opacity: 0; } 45%, 66% { opacity: 1; } 84%, 100% { opacity: 0.15; transform: scale(0.7); } }
+        @keyframes scene-bubble { 0%, 25% { opacity: 0; transform: translateY(12px) scale(0.7); } 42% { opacity: 0.9; } 90% { opacity: 0; transform: translateY(-46px) scale(1.1); } 100% { opacity: 0; } }
+        @keyframes scene-soil { 0%, 20% { opacity: 0; transform: translateX(0); } 42%, 62% { opacity: 1; transform: translateX(0); } 86% { opacity: 1; transform: translateX(-16px) translateY(-8px); } 100% { opacity: 0.4; transform: translateX(-22px) translateY(8px); } }
+        @keyframes scene-burrow { 0%, 22% { opacity: 0; transform: scaleX(0.2); } 45%, 68% { opacity: 1; transform: scaleX(1); } 100% { opacity: 1; transform: scaleX(1); } }
+        @keyframes scene-shelter { 0%, 62% { opacity: 0; transform: translateX(-18px); } 82%, 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes jaguar-pounce { 0%, 100% { translate: 0 0; rotate: 0; scale: 1; } 16% { translate: -18px 3px; rotate: -7deg; scale: 0.9; } 38% { translate: 12px -18px; rotate: 8deg; scale: 1.18; } 52% { translate: 34px -5px; rotate: -4deg; scale: 1.1; } 72% { translate: -11px 6px; rotate: 5deg; scale: 0.96; } 88% { translate: 5px -4px; rotate: -2deg; scale: 1.03; } }
+        @keyframes dolphin-swim { 0%, 100% { translate: 0 0; rotate: -5deg; } 20% { translate: -42px 6px; rotate: 0; } 50% { translate: 36px -8px; rotate: 5deg; } 80% { translate: -20px 4px; rotate: -3deg; } }
+        @keyframes harpy-flight { 0%, 100% { translate: 0 12px; rotate: -5deg; scale: 0.95; } 25% { translate: -28px -36px; rotate: 3deg; scale: 1.12; } 55% { translate: 24px -54px; rotate: -2deg; scale: 1.18; } 80% { translate: 42px -12px; rotate: 4deg; scale: 1.04; } }
+        @keyframes macaw-flight { 0%, 100% { translate: 0 8px; rotate: 5deg; scale: 0.95; } 20% { translate: 32px -20px; rotate: -10deg; scale: 1.08; } 48% { translate: -12px -48px; rotate: 4deg; scale: 1.16; } 72% { translate: -38px -20px; rotate: -7deg; scale: 1.06; } }
+        @keyframes manatee-swim { 0%, 100% { translate: 0 8px; rotate: -3deg; } 25% { translate: 24px 0; rotate: 2deg; } 55% { translate: -20px 10px; rotate: -4deg; } 80% { translate: 14px -5px; rotate: 2deg; } }
+        @keyframes armadillo-dig { 0%, 100% { translate: 0 0; rotate: 0; scale: 1; } 20% { translate: -8px 8px; rotate: -12deg; scale: 0.95; } 42% { translate: 5px 14px; rotate: 10deg; scale: 0.9; } 65% { translate: 12px 3px; rotate: -8deg; scale: 0.96; } 82% { translate: 0 -5px; rotate: 4deg; scale: 1.04; } }
+        @keyframes card-jaguar-stalk { 0%, 100% { translate: 0 0; rotate: 0; } 35% { translate: 6px 0; rotate: 8deg; } 70% { translate: 12px 0; rotate: 0; } }
+        @keyframes card-jaguar-attack { 0%, 22%, 100% { translate: 0 0; rotate: 0; scale: 1; } 38% { translate: -3px 1px; rotate: -12deg; scale: 0.9; } 54% { translate: 8px -1px; rotate: 13deg; scale: 1.13; } 68% { translate: 12px 0; rotate: -7deg; scale: 1.08; } 82% { translate: 0 0; rotate: 0; scale: 1; } }
+        @keyframes card-jaguar-claws { 0%, 48%, 100% { opacity: 0; transform: translate(-4px, 4px) scale(0.5); } 56% { opacity: 1; transform: translate(5px, -3px) scale(1.2); } 68% { opacity: 0; transform: translate(12px, -7px) scale(0.8); } }
+        @keyframes card-dolphin-swim { 0%, 100% { translate: 0 0; rotate: -8deg; } 25% { translate: 5px -4px; rotate: 4deg; } 50% { translate: 10px 0; rotate: -8deg; } 75% { translate: 5px 4px; rotate: 4deg; } }
+        @keyframes card-harpy-hunt { 0%, 100% { translate: 0 0; rotate: -3deg; } 30% { translate: 4px -9px; rotate: 6deg; } 60% { translate: 10px -5px; rotate: -8deg; } 78% { translate: 12px 4px; rotate: 12deg; } }
+        @keyframes card-macaw-flight { 0%, 100% { translate: 0 0; rotate: 0; } 20% { translate: 2px -6px; rotate: -12deg; } 40% { translate: 7px -1px; rotate: 10deg; } 60% { translate: 9px -8px; rotate: -12deg; } 80% { translate: 4px 1px; rotate: 8deg; } }
+        @keyframes card-manatee-swim { 0%, 100% { translate: 0 0; rotate: -4deg; } 50% { translate: 8px 3px; rotate: 4deg; } }
+        @keyframes card-manatee-graze { 0%, 100% { translate: 0 0; rotate: -2deg; } 25% { translate: 4px 2px; rotate: 5deg; } 50% { translate: 9px 4px; rotate: -2deg; } 75% { translate: 5px 1px; rotate: 4deg; } }
+        @keyframes card-armadillo-dig { 0%, 100% { translate: 0 0; rotate: 0; } 30% { translate: 0 4px; rotate: -8deg; } 65% { translate: 3px 5px; rotate: 8deg; } }
+        @keyframes jaguar-claw-strike { 0%, 48%, 100% { opacity: 0; transform: translate(-0.15em, 0.12em) scale(0.5); } 56% { opacity: 1; transform: translate(0.15em, -0.1em) scale(1.25); } 68% { opacity: 0; transform: translate(0.35em, -0.2em) scale(0.7); } }
+        @keyframes animal-shield-orbit { 0%, 100% { transform: rotateX(62deg) rotateZ(-8deg) scale(0.88); } 50% { transform: rotateX(62deg) rotateZ(8deg) scale(1.08); } }
+        @keyframes animal-energy-wave { 0% { transform: scale(0.72); opacity: 0.85; } 100% { transform: scale(1.75); opacity: 0; } }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(2, 6, 23, 0.9);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 242, 254, 0.5);
+            border-radius: 2px;
+        }
+        @keyframes scanlineMove {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(1000%); }
+        }
+        @keyframes event-title-color-cycle {
+            from { filter: hue-rotate(0deg); }
+            to { filter: hue-rotate(360deg); }
+        }
+        @keyframes animal-float {
+            0%, 100% { translate: 0 0; }
+            50% { translate: 0 -12px; }
+        }
+        @keyframes animal-eye-color-cycle {
+            0% { color: #38bdf8; }
+            25% { color: #a78bfa; }
+            50% { color: #f472b6; }
+            75% { color: #fbbf24; }
+            100% { color: #38bdf8; }
+        }
+        @keyframes angry-eye-pulse {
+            from { box-shadow: 0 0 2px 1px rgba(239, 68, 68, 0.65); }
+            to { box-shadow: 0 0 4px 2px rgba(239, 68, 68, 0.95); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .event-title { animation: none; }
+            .animal-card.is-performing-action .animal-card-avatar { animation: none !important; }
+            .animal-eye { animation: none !important; }
+            .animal-avatar,
+            .animal-avatar[data-animal],
+            .animal-avatar.is-activated,
+            .animal-avatar.is-activated[data-animal],
+            .animal-avatar::before,
+            .animal-avatar::after,
+            .animal-avatar.is-activated::before,
+            .animal-avatar.is-activated::after,
+            .nature-scene.is-active .nature-scene-object,
+            .nature-scene.is-active .nature-scene-caption {
+                animation: none !important;
+                opacity: 1;
+                transform: none;
+            }
+        }
+        .scanner-beam {
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(to right, transparent, #00f2fe, transparent);
+            animation: scanlineMove 4s ease-in-out infinite;
+            pointer-events: none;
+        }
